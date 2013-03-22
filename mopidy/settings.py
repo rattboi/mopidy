@@ -21,11 +21,13 @@ from __future__ import unicode_literals
 #:         u'mopidy.backends.local.LocalBackend',
 #:         u'mopidy.backends.spotify.SpotifyBackend',
 #:         u'mopidy.backends.spotify.StreamBackend',
+#:         u'mopidy.backends.spotify.SubsonicBackend',
 #:     )
 BACKENDS = (
     'mopidy.backends.local.LocalBackend',
     'mopidy.backends.spotify.SpotifyBackend',
     'mopidy.backends.stream.StreamBackend',
+    'mopidy.backends.stream.SubsonicBackend',
 )
 
 #: The log format used for informational logging.
@@ -326,3 +328,35 @@ STREAM_PROTOCOLS = (
     'rtmps',
     'rtsp',
 )
+
+#: Subsonic remote host.
+#: 
+#: Used by :mod:`mopidy.backends.subsonic`.
+#: 
+#: Example::
+#: 
+#:     SUBSONIC_SERVER_URI = u'http://host:port'
+#: 
+#: Default::
+#: 
+#:     SUBSONIC_SERVER_URI = None
+SUBSONIC_SERVER_URI = None
+
+#: Subsonic username.
+#:
+#: Used by :mod:`mopidy.backends.subsonic`.
+#:
+#: Default::
+#:
+#:     SUBSONIC_USERNAME = None
+SUBSONIC_USERNAME = None
+
+#: Subsonic password.
+#:
+#: Used by :mod:`mopidy.backends.subsonic`.
+#:
+#: Default::
+#:
+#:     SUBSONIC_PASSWORD = None
+SUBSONIC_PASSWORD = None
+
