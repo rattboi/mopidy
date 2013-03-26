@@ -342,6 +342,15 @@ STREAM_PROTOCOLS = (
 #:     SUBSONIC_SERVER_URI = None
 SUBSONIC_SERVER_URI = None
 
+#: Subsonic port.
+#:
+#: Used by :mod:`mopidy.backends.subsonic`.
+#:
+#: Default::
+#:
+#:     SUBSONIC_PORT = None
+SUBSONIC_SERVER_PORT = None
+
 #: Subsonic username.
 #:
 #: Used by :mod:`mopidy.backends.subsonic`.

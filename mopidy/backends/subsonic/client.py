@@ -4,14 +4,14 @@
 from __future__ import unicode_literals
 
 import logging
-import requests
+import libsonic
+#import requests
 import time
 
-from requests.exceptions import RequestException
+#from requests.exceptions import RequestException
 from mopidy.models import Track, Album, Artist
 
-logger = logging.getLogger('mopidy.backends.beets.client')
-
+logger = logging.getLogger('mopidy.backends.subsonic.client')
 
 class cache(object):
     ## TODO: merge this to util library
@@ -48,18 +48,23 @@ class cache(object):
 
 class SubsonicRemoteClient(object):
 
-    def __init__(self, endpoint):
+    def __init__(self, endpoint, port, username, password):
         super(SubsonicRemoteClient, self).__init__()
-        self.api = requests.Session()
-        if endpoint:
-            self.api_endpoint = endpoint
-            logger.info('Connecting to Subsonic library %s', endpoint)
-            try:
-                self._get('/')
-            except Exception as e:
-                logger.error('Subsonic Authentication error: %s' % e)
+        #self.api = requests.Session()
+        if not (endpoint and port and username and password):
+          logger.error('Subsonic API settings are not fully defined: %s %s %s %s' % (endpoint, port, username, password))
         else:
-            logger.error('Subsonic API url is not defined')
+            self.api_endpoint = endpoint
+            self.api_port = port
+            self.api_user = username
+            self.api_pass = password
+            self.api = libsonic.Connection(self.api_endpoint, self.api_user, self.api_pass, port=int(self.api_port))
+            logger.info('Connecting to Subsonic library %s:%s as user %s', self.api_endpoint, self.api_port, self.api_user)
+            try:
+                self.api.getIndexes()
+            except Exception as e:
+                print("exception")
+                logger.error('Subsonic Authentication error: %s' % e)
 
     @cache()
     def get_tracks(self):
@@ -91,14 +96,16 @@ class SubsonicRemoteClient(object):
 
     def _get(self, url):
         try:
-            url = self.api_endpoint + url
+            indexes = self.api.getIndexes()
+            url = self.api_endpoint + ":" + self.api_port + url
             logger.debug('Requesting %s' % url)
-            req = self.api.get(url)
-            if req.status_code != 200:
-                raise logger.error('Request %s, failed with status code %s' % (
-                    url, req.status_code))
+            #req = self.api.get(url)
+            #if req.status_code != 200:
+                #raise logger.error('Request %s, failed with status code %s' % (
+                    #url, req.status_code))
 
-            return req.json()
+            #return req.json()
+            return indexes
         except Exception as e:
             logger.error('Request %s, failed with error %s' % (
                 url, e))
