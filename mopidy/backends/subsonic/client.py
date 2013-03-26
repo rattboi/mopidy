@@ -68,7 +68,18 @@ class SubsonicRemoteClient(object):
 
     @cache()
     def get_tracks(self):
-        track_ids = self._get('/item/').get('item_ids')
+        indexes = self._get('indexes').get('indexes').get('index')
+        catergories = []
+        for x in xrange(len(indexes)):
+          catergories.append(indexes[x].get('artist'))
+
+        artists = []
+        for category in xrange(len(catergories)):
+          for artist in xrange(len(catergories[category])):
+            artists.append(catergories[category][artist])
+
+        return artists
+
         tracks = []
         for track_id in track_ids:
             tracks.append(self.get_track(track_id))
@@ -185,7 +196,7 @@ class SubsonicRemoteClient(object):
             track_kwargs[b'uri'] = '%s/item/%s/file' % (
                 self.api_endpoint, data['id'])
         else:
-            track_kwargs[b'uri'] = 'beets://%s' % data['id']
+            track_kwargs[b'uri'] = 'subsonic://%s' % data['id']
         track_kwargs[b'length'] = int(data.get('length', 0)) * 1000
 
         track = Track(**track_kwargs)
