@@ -24,10 +24,10 @@ class SubsonicLibraryProvider(base.BaseLibraryProvider):
     def search(self, **query):
         self._validate_query(query)
         if not query:
-            # Fetch all data(browse library)
+            # Fetch all artists(browse library)
             return SearchResult(
                 uri='subsonic:search',
-                tracks=self.remote.get_tracks())
+                tracks=self.remote.get_artists())
 
         for (field, val) in query.iteritems():
             if field == "album":

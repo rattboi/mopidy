@@ -5,10 +5,9 @@ from __future__ import unicode_literals
 
 import logging
 import libsonic
-#import requests
 import time
+from pprint import pprint
 
-#from requests.exceptions import RequestException
 from mopidy.models import Track, Album, Artist
 
 logger = logging.getLogger('mopidy.backends.subsonic.client')
@@ -67,27 +66,27 @@ class SubsonicRemoteClient(object):
                 logger.error('Subsonic Authentication error: %s' % e)
 
     @cache()
-    def get_tracks(self):
-        indexes = self._get('indexes').get('indexes').get('index')
-        catergories = []
-        for x in xrange(len(indexes)):
-          catergories.append(indexes[x].get('artist'))
+    def get_artists(self):
+        artist_list = self.api.getArtists().get('artists').get('index')
+        categories = []
+        for x in xrange(len(artist_list)):
+          categories.append(artist_list[x].get('artist'))
 
         artists = []
-        for category in xrange(len(catergories)):
-          for artist in xrange(len(catergories[category])):
-            artists.append(catergories[category][artist])
-
-        return artists
+        for category in xrange(len(categories)):
+          for artist in xrange(len(categories[category])):
+            artists.append(categories[category][artist])
 
         tracks = []
-        for track_id in track_ids:
-            tracks.append(self.get_track(track_id))
+        for artist in artists:
+            tracks.append(self.get_track(artist))
         return tracks
-
+         
     @cache(ctl=16)
     def get_track(self, id, remote_url=False):
-        return self._convert_json_data(self._get('/item/%s' % id), remote_url)
+        stuff = self._convert_data(id, remote_url)
+        #pprint(stuff)
+        return stuff
 
     @cache()
     def get_item_by(self, name):
@@ -125,11 +124,11 @@ class SubsonicRemoteClient(object):
         if len(res) > 0:
             tracks = []
             for track in res:
-                tracks.append(self._convert_json_data(track))
+                tracks.append(self._convert_data(track))
             return tracks
         return None
 
-    def _convert_json_data(self, data, remote_url=False):
+    def _convert_data(self, data, remote_url=False):
         if not data:
             return
         # NOTE kwargs dict keys must be bytestrings to work on Python < 2.6.5
@@ -149,6 +148,10 @@ class SubsonicRemoteClient(object):
         if 'artist' in data:
             artist_kwargs[b'name'] = data['artist']
             albumartist_kwargs[b'name'] = data['artist']
+
+        if 'name' in data:
+            artist_kwargs[b'name'] = data['name']
+            albumartist_kwargs[b'name'] = data['name']
 
         if 'albumartist' in data:
             albumartist_kwargs[b'name'] = data['albumartist']
