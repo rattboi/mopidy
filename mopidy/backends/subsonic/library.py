@@ -13,9 +13,9 @@ logger = logging.getLogger('mopidy.backends.subsonic')
 class SubsonicLibraryProvider(base.BaseLibraryProvider):
     def __init__(self, *args, **kwargs):
         super(SubsonicLibraryProvider, self).__init__(*args, **kwargs)
-        self.remote = SubsonicRemoteClient(settings.SUBSONIC_SERVER_URI, 
+        self.remote = SubsonicRemoteClient(settings.SUBSONIC_SERVER_URI,
             settings.SUBSONIC_SERVER_PORT,
-            settings.SUBSONIC_USERNAME, 
+            settings.SUBSONIC_USERNAME,
             settings.SUBSONIC_PASSWORD)
 
     def find_exact(self, **query):

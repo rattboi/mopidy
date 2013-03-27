@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 import logging
-
 import pykka
 
 from mopidy import settings
@@ -11,7 +10,7 @@ logger = logging.getLogger('mopidy.backends.subsonic')
 
 class SubsonicBackend(pykka.ThreadingActor, base.Backend):
     # Imports inside methods are to prevent loading of __init__.py to fail on
-    # missing spotify dependencies.
+    # missing subsonic dependencies.
 
     def __init__(self, audio):
         super(SubsonicBackend, self).__init__()
